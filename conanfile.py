@@ -2,7 +2,7 @@ from conans import ConanFile, CMake, tools
 import os
 import glob
 
-class CHMConan(ConanFile):
+class WindNinjaConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
    
 
@@ -16,7 +16,7 @@ class CHMConan(ConanFile):
 
     options = {"openmp":[True, False]}
 
-    default_options = {"openmp":False}
+    default_options = {"openmp":True, "gdal:libcurl":True}
  
 
     def source(self):
@@ -34,18 +34,22 @@ class CHMConan(ConanFile):
                                                                           set(CMAKE_CXX_STANDARD_REQUIRED ON)
                                                                           set(CMAKE_CXX_EXTENSIONS OFF)
                                                                           add_compile_options(-w -Wno-narrowing)''')
+        if tools.os_info.is_macos and self.options.openmp:
+            print('!!! Macos and OMP not supported, setting openmp=false')
+            self.options.openmp = False
 
         #Absolutely ensure we find it
         if(self.options.openmp):
             tools.replace_in_file("CMakeLists.txt", "FIND_PACKAGE(OpenMP)", "find_package(OpenMP REQUIRED)")
+            # tools.replace_in_file("CMakeLists.txt", "include(FindOpenMP)", "")
 
         tools.replace_in_file("CMakeLists.txt", "include(FindBoost)", "find_package(Boost REQUIRED)")
 
         #changes to support the conan finds
         tools.replace_in_file("CMakeLists.txt", "include(FindNetCDF)", '''find_package(netcdf-c REQUIRED)''')
 
-        tools.replace_in_file("CMakeLists.txt", "include(FindGDAL)", '''find_package(gdal REQUIRED)
-                                                                        set(GDAL_LIBRARY "gdal::gdal")''')
+        # tools.replace_in_file("CMakeLists.txt", "include(FindGDAL)", '''find_package(gdal REQUIRED)
+                                                                        # set(GDAL_LIBRARY "gdal::gdal")''')
 
         #patches to protect omp sections
         tools.replace_in_file("src/ninja/wxModelInitialization.h","#include <omp.h>", '''#ifdef _OPENMP 
@@ -103,9 +107,10 @@ class CHMConan(ConanFile):
 
     def requirements(self):
         self.requires( "boost/1.71.0@CHM/stable" )
-        self.requires( "proj/4.9.3@CHM/stable" )
-        self.requires( "gdal/2.4.1@CHM/stable" )
+        # self.requires( "proj/4.9.3@CHM/stable" )
+        # self.requires( "gdal/2.4.1@CHM/stable" )
         self.requires( "netcdf-c/4.6.2@CHM/stable")
+        
 
     def _configure_cmake(self):
         cmake = CMake(self)
@@ -114,8 +119,9 @@ class CHMConan(ConanFile):
         cmake.definitions["NINJA_QTGUI"] = False
         cmake.definitions["CMAKE_MODULE_PATH"] = self.build_folder # for the conan finds
         cmake.definitions["NINJAFOAM"] = False
-        cmake.definitions["NINJA_SCM_REVISION"] = self.version
-        cmake.definitions["OPENMP_SUPPORT"]=False
+        cmake.definitions["NINJA_SCM_REVISION"] = "3.6.0" 
+        #self.version
+        cmake.definitions["OPENMP_SUPPORT"]=self.options.openmp
 
         if tools.os_info.is_macos:
             cmake.definitions["CMAKE_INSTALL_RPATH"] = "@executable_path/../lib"
