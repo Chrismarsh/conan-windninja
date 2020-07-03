@@ -1,10 +1,11 @@
 from cpt.packager import ConanMultiPackager
 from collections import defaultdict
+import platform
 
 if __name__ == "__main__":
 
     command=""
-    if platform == "linux":
+    if platform.system()== "Linux":
         command = "sudo apt-get -qq update && sudo apt-get -qq install -y libgdal-dev"
 
     builder = ConanMultiPackager(cppstds=[14],
