@@ -7,7 +7,7 @@ class WindNinjaConan(ConanFile):
    
 
     name = "windninja"
-    version = "3.5.3"
+    version = "3.6.0"
     license = "https://github.com/firelab/windninja/blob/master/LICENSE"
     author = "firelab"
     url = "https://github.com/firelab/windninja"
@@ -23,7 +23,7 @@ class WindNinjaConan(ConanFile):
 
         git = tools.Git()
         git.clone("https://github.com/firelab/windninja.git") 
-        git.checkout("3.5.3")
+        # git.checkout("3.5.3")
 
         # Needed for Find OMP on MacOS
         tools.replace_in_file("CMakeLists.txt", "cmake_minimum_required(VERSION 2.6)",  "cmake_minimum_required(VERSION 3.16)")
@@ -52,27 +52,27 @@ class WindNinjaConan(ConanFile):
                                                                         # set(GDAL_LIBRARY "gdal::gdal")''')
 
         #patches to protect omp sections
-        tools.replace_in_file("src/ninja/wxModelInitialization.h","#include <omp.h>", '''#ifdef _OPENMP 
-                                                                                            #include <omp.h> 
-                                                                                            #endif''')
-        tools.replace_in_file("src/ninja/wxModelInitialization.h",'''#include "omp_guard.h"''', '''#ifdef _OPENMP 
-                                                                                            #include "omp_guard.h" 
-                                                                                            #endif''')
+        # tools.replace_in_file("src/ninja/wxModelInitialization.h","#include <omp.h>", '''#ifdef _OPENMP 
+        #                                                                                     #include <omp.h> 
+        #                                                                                     #endif''')
+        # tools.replace_in_file("src/ninja/wxModelInitialization.h",'''#include "omp_guard.h"''', '''#ifdef _OPENMP 
+        #                                                                                     #include "omp_guard.h" 
+        #                                                                                     #endif''')
 
-        tools.replace_in_file("src/ninja/wxModelInitialization.h",'''extern omp_lock_t netCDF_lock;''', '''#ifdef _OPENMP 
-                                                                                            extern omp_lock_t netCDF_lock;
-                                                                                            #endif''')
+        # tools.replace_in_file("src/ninja/wxModelInitialization.h",'''extern omp_lock_t netCDF_lock;''', '''#ifdef _OPENMP 
+        #                                                                                     extern omp_lock_t netCDF_lock;
+        #                                                                                     #endif''')
                                                                                             
-        tools.replace_in_file("src/ninja/omp_guard.h","#include <omp.h>", '''#ifdef _OPENMP 
-                                                                                            #include <omp.h> 
-                                                                                            ''')
-        tools.replace_in_file("src/ninja/omp_guard.h","#endif", '''#endif
-                                                                    #endif''')
+        # tools.replace_in_file("src/ninja/omp_guard.h","#include <omp.h>", '''#ifdef _OPENMP 
+        #                                                                                     #include <omp.h> 
+        #                                                                                     ''')
+        # tools.replace_in_file("src/ninja/omp_guard.h","#endif", '''#endif
+        #                                                             #endif''')
                                                                                            
        
 
 
-        tools.replace_in_file("src/ninja/wxModelInitialization.cpp","bpt::time_duration td = bpt::hours( varvals[i] );","bpt::time_duration td = bpt::hours( (int) varvals[i] );")
+        # tools.replace_in_file("src/ninja/wxModelInitialization.cpp","bpt::time_duration td = bpt::hours( varvals[i] );","bpt::time_duration td = bpt::hours( (int) varvals[i] );")
 
         if(self.options.openmp):
             tools.replace_in_file("autotest/CMakeLists.txt",
