@@ -1,6 +1,6 @@
 env:
    global:
-      - CONAN_REFERENCE: "windninja/3.5.3"
+      - CONAN_REFERENCE: "windninja/3.6.0"
       - CONAN_USERNAME: "CHM"
       - CONAN_LOGIN_USERNAME: "chrismarsh"
       - CONAN_CHANNEL: "stable"
