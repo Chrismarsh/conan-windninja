@@ -17,7 +17,8 @@ class WindNinjaConan(ConanFile):
     options = {"openmp":[True, False]}
 
     default_options = {"openmp":True, "gdal:libcurl":True}
- 
+
+    build_policy = 'always' #as we track master, always build
 
     def source(self):
 
