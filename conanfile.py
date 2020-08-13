@@ -16,7 +16,7 @@ class WindNinjaConan(ConanFile):
 
     options = {"openmp":[True, False]}
 
-    default_options = {"openmp":True, "gdal:libcurl":True}
+    default_options = {"openmp":True, "gdal:libcurl":True, "gdal:netcdf":True}
 
     build_policy = 'always' #as we track master, always build
 
@@ -49,31 +49,6 @@ class WindNinjaConan(ConanFile):
         #changes to support the conan finds
         tools.replace_in_file("CMakeLists.txt", "include(FindNetCDF)", '''find_package(netcdf-c REQUIRED)''')
 
-        # tools.replace_in_file("CMakeLists.txt", "include(FindGDAL)", '''find_package(gdal REQUIRED)
-                                                                        # set(GDAL_LIBRARY "gdal::gdal")''')
-
-        #patches to protect omp sections
-        # tools.replace_in_file("src/ninja/wxModelInitialization.h","#include <omp.h>", '''#ifdef _OPENMP 
-        #                                                                                     #include <omp.h> 
-        #                                                                                     #endif''')
-        # tools.replace_in_file("src/ninja/wxModelInitialization.h",'''#include "omp_guard.h"''', '''#ifdef _OPENMP 
-        #                                                                                     #include "omp_guard.h" 
-        #                                                                                     #endif''')
-
-        # tools.replace_in_file("src/ninja/wxModelInitialization.h",'''extern omp_lock_t netCDF_lock;''', '''#ifdef _OPENMP 
-        #                                                                                     extern omp_lock_t netCDF_lock;
-        #                                                                                     #endif''')
-                                                                                            
-        # tools.replace_in_file("src/ninja/omp_guard.h","#include <omp.h>", '''#ifdef _OPENMP 
-        #                                                                                     #include <omp.h> 
-        #                                                                                     ''')
-        # tools.replace_in_file("src/ninja/omp_guard.h","#endif", '''#endif
-        #                                                             #endif''')
-                                                                                           
-       
-
-
-        # tools.replace_in_file("src/ninja/wxModelInitialization.cpp","bpt::time_duration td = bpt::hours( varvals[i] );","bpt::time_duration td = bpt::hours( (int) varvals[i] );")
 
         if(self.options.openmp):
             tools.replace_in_file("autotest/CMakeLists.txt",
@@ -108,8 +83,8 @@ class WindNinjaConan(ConanFile):
 
     def requirements(self):
         self.requires( "boost/1.71.0@CHM/stable" )
-        # self.requires( "proj/4.9.3@CHM/stable" )
-        # self.requires( "gdal/2.4.1@CHM/stable" )
+        self.requires( "proj/4.9.3@CHM/stable" )
+        self.requires( "gdal/2.4.1@CHM/stable" )
         self.requires( "netcdf-c/4.6.2@CHM/stable")
         
 

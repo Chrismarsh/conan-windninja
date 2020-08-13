@@ -6,6 +6,7 @@ env:
       - CONAN_CHANNEL: "stable"
       - CONAN_UPLOAD: "https://api.bintray.com/conan/chrismarsh/CHM"
       - MAKEFLAGS: "-j 2"
+      - CONAN_UPLOAD_ONLY_RECIPE: "1"
 
 
 linux: &linux
