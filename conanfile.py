@@ -58,31 +58,31 @@ class WindNinjaConan(ConanFile):
         if(self.options.openmp):
             tools.replace_in_file("autotest/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX ")
+                "set(LINK_LIBS OpenMP::OpenMP_CXX gdal::gdal")
             tools.replace_in_file("src/solar_grid/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX ")
+                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
             tools.replace_in_file("src/cli/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX ")
+                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
             tools.replace_in_file("src/stl_converter/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX ")
+                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
             tools.replace_in_file("src/fetch_station/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX ")
+                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
             tools.replace_in_file("src/ninja/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX ")
+                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
             tools.replace_in_file("src/fetch_dem/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX ")
+                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
             tools.replace_in_file("src/gui/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX ")
+                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
             tools.replace_in_file("src/output_converter/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX ")
+                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
         
 
 
