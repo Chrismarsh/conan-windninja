@@ -44,9 +44,14 @@ class WindNinjaConan(ConanFile):
             tools.replace_in_file("CMakeLists.txt", "FIND_PACKAGE(OpenMP)", "find_package(OpenMP REQUIRED)")
             # tools.replace_in_file("CMakeLists.txt", "include(FindOpenMP)", "")
 
-        tools.replace_in_file("CMakeLists.txt", "include(FindBoost)", "find_package(Boost REQUIRED)")
+
+        tools.replace_in_file("CMakeLists.txt", "include(FindBoost)", " ")
+        
+        tools.replace_in_file("CMakeLists.txt", "find_package(GDAL REQUIRED)", " ")
+        tools.replace_in_file("CMakeLists.txt", "include(FindGDAL)", "find_package(gdal REQUIRED)")
 
         #changes to support the conan finds
+        tools.replace_in_file("CMakeLists.txt", "find_package(NetCDF REQUIRED)", ' ')
         tools.replace_in_file("CMakeLists.txt", "include(FindNetCDF)", '''find_package(netcdf-c REQUIRED)''')
 
 
