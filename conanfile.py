@@ -42,8 +42,6 @@ class WindNinjaConan(ConanFile):
         #Absolutely ensure we find it
         if(self.options.openmp):
             tools.replace_in_file("CMakeLists.txt", "FIND_PACKAGE(OpenMP)", "find_package(OpenMP REQUIRED)")
-            # tools.replace_in_file("CMakeLists.txt", "include(FindOpenMP)", "")
-
 
         tools.replace_in_file("CMakeLists.txt", "include(FindBoost)", " ")
         
@@ -54,35 +52,38 @@ class WindNinjaConan(ConanFile):
         tools.replace_in_file("CMakeLists.txt", "find_package(NetCDF REQUIRED)", ' ')
         tools.replace_in_file("CMakeLists.txt", "include(FindNetCDF)", '''find_package(netcdf-c REQUIRED)''')
 
+        target_string = ' gdal::gdal '
+        if(self.options.openmp):
+            target_string += ' OpenMP::OpenMP_CXX '
 
         if(self.options.openmp):
             tools.replace_in_file("autotest/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX gdal::gdal")
+                f"set(LINK_LIBS {target_string}")
             tools.replace_in_file("src/solar_grid/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
+                f"set(LINK_LIBS {target_string}")
             tools.replace_in_file("src/cli/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
+                f"set(LINK_LIBS {target_string}")
             tools.replace_in_file("src/stl_converter/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
+                f"set(LINK_LIBS {target_string}")
             tools.replace_in_file("src/fetch_station/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
+                f"set(LINK_LIBS {target_string}")
             tools.replace_in_file("src/ninja/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
+                f"set(LINK_LIBS {target_string}")
             tools.replace_in_file("src/fetch_dem/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
+                f"set(LINK_LIBS {target_string}")
             tools.replace_in_file("src/gui/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
+                f"set(LINK_LIBS {target_string}")
             tools.replace_in_file("src/output_converter/CMakeLists.txt",
                 "set(LINK_LIBS",
-                "set(LINK_LIBS OpenMP::OpenMP_CXX  gdal::gdal")
+                f"set(LINK_LIBS {target_string}")
         
 
 
@@ -119,10 +120,23 @@ class WindNinjaConan(ConanFile):
         cmake = self._configure_cmake()
         cmake.build()
 
+        # strip any hard coded install_name from the dylibs to simplify downstream use
+        if not tools.os_info.is_macos:
+            for path, subdirs, names in os.walk(os.path.join(self.package_folder, 'bin')):
+                for name in names:
+                    if fnmatch(name, 'WindNinja_cli'):
+                        bin_file = os.path.join(path, name)
+
+                        cmd = "install_name_tool -id @rpath/{0} {1}".format(name, so_file)
+                        cmd = "readelf %s -d | grep NEEDED |awk '{print $5}' | grep '\\[/'  | awk -F'[\\[\\]]' '{print $2}' | while read x; do patchelf --replace-needed $x `echo $x | grep -Eo '[a-zA-Z0-9_+\\.-]+so.*?'` %s; done"  %(bin_file,bin_file)
+
+                        os.system(cmd)
+
 
     def package(self):
         cmake = self._configure_cmake()
         cmake.install()
+
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
