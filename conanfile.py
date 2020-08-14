@@ -128,7 +128,7 @@ class WindNinjaConan(ConanFile):
                         bin_file = os.path.join(path, name)
 
                         cmd = "install_name_tool -id @rpath/{0} {1}".format(name, so_file)
-                        cmd = "readelf %s -d | grep NEEDED |awk '{print $5}' | grep '\\[/'  | awk -F'[\\[\\]]' '{print $2}' | while read x; do patchelf --replace-needed $x `echo $x | grep -Eo '[a-zA-Z0-9_+\\.-]+so.*?'` %s; done"  %(bin_file,bin_file)
+                        cmd = """readelf %s -d | grep NEEDED |awk '{print $5}' | grep '\\[/'  | awk -F'[\\\[\\\]]' '{print $2}' | while read x; do patchelf --replace-needed $x `echo $x | grep -Eo '[a-zA-Z0-9_+\\.-]+so.*?'` %s; done"""  %(bin_file,bin_file)
 
                         os.system(cmd)
 
