@@ -56,34 +56,34 @@ class WindNinjaConan(ConanFile):
         if(self.options.openmp):
             target_string += ' OpenMP::OpenMP_CXX '
 
-        if(self.options.openmp):
-            tools.replace_in_file("autotest/CMakeLists.txt",
-                "set(LINK_LIBS",
-                f"set(LINK_LIBS {target_string}")
-            tools.replace_in_file("src/solar_grid/CMakeLists.txt",
-                "set(LINK_LIBS",
-                f"set(LINK_LIBS {target_string}")
-            tools.replace_in_file("src/cli/CMakeLists.txt",
-                "set(LINK_LIBS",
-                f"set(LINK_LIBS {target_string}")
-            tools.replace_in_file("src/stl_converter/CMakeLists.txt",
-                "set(LINK_LIBS",
-                f"set(LINK_LIBS {target_string}")
-            tools.replace_in_file("src/fetch_station/CMakeLists.txt",
-                "set(LINK_LIBS",
-                f"set(LINK_LIBS {target_string}")
-            tools.replace_in_file("src/ninja/CMakeLists.txt",
-                "set(LINK_LIBS",
-                f"set(LINK_LIBS {target_string}")
-            tools.replace_in_file("src/fetch_dem/CMakeLists.txt",
-                "set(LINK_LIBS",
-                f"set(LINK_LIBS {target_string}")
-            tools.replace_in_file("src/gui/CMakeLists.txt",
-                "set(LINK_LIBS",
-                f"set(LINK_LIBS {target_string}")
-            tools.replace_in_file("src/output_converter/CMakeLists.txt",
-                "set(LINK_LIBS",
-                f"set(LINK_LIBS {target_string}")
+        
+        tools.replace_in_file("autotest/CMakeLists.txt",
+            "set(LINK_LIBS",
+            f"set(LINK_LIBS {target_string}")
+        tools.replace_in_file("src/solar_grid/CMakeLists.txt",
+            "set(LINK_LIBS",
+            f"set(LINK_LIBS {target_string}")
+        tools.replace_in_file("src/cli/CMakeLists.txt",
+            "set(LINK_LIBS",
+            f"set(LINK_LIBS {target_string}")
+        tools.replace_in_file("src/stl_converter/CMakeLists.txt",
+            "set(LINK_LIBS",
+            f"set(LINK_LIBS {target_string}")
+        tools.replace_in_file("src/fetch_station/CMakeLists.txt",
+            "set(LINK_LIBS",
+            f"set(LINK_LIBS {target_string}")
+        tools.replace_in_file("src/ninja/CMakeLists.txt",
+            "set(LINK_LIBS",
+            f"set(LINK_LIBS {target_string}")
+        tools.replace_in_file("src/fetch_dem/CMakeLists.txt",
+            "set(LINK_LIBS",
+            f"set(LINK_LIBS {target_string}")
+        tools.replace_in_file("src/gui/CMakeLists.txt",
+            "set(LINK_LIBS",
+            f"set(LINK_LIBS {target_string}")
+        tools.replace_in_file("src/output_converter/CMakeLists.txt",
+            "set(LINK_LIBS",
+            f"set(LINK_LIBS {target_string}")
         
 
 
