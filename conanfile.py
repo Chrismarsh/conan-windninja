@@ -24,12 +24,12 @@ class WindNinjaConan(ConanFile):
 
     # build_policy = 'always' #as we track master, always build
 
-    _source_folder = 'WindNinja'
+    _source_folder = 'windninja'
 
     def source(self):
 
         tools.get(**self.conan_data["sources"][self.version])
-        os.rename("WindNinja-{}".format(self.version), self._source_folder)
+        os.rename("windninja-{}".format(self.version), self._source_folder)
 
 
         # git = tools.Git()
