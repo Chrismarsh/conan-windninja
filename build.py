@@ -5,8 +5,6 @@ import platform
 if __name__ == "__main__":
 
     command=""
-    # if platform.system()== "Linux":
-    #     command = "sudo apt-get -qq update && sudo apt-get -qq install -y libgdal-dev"
 
     builder = ConanMultiPackager(cppstds=[14],
                                 archs=["x86_64"],

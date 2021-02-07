@@ -7,30 +7,40 @@ class WindNinjaConan(ConanFile):
    
 
     name = "windninja"
-    version = "3.6.0"
     license = "https://github.com/firelab/windninja/blob/master/LICENSE"
     author = "firelab"
     url = "https://github.com/firelab/windninja"
     description = "WindNinja is a diagnostic wind model developed for use in wildland fire modeling."
     generators = "cmake_find_package"
 
-    options = {"openmp":[True, False]}
+    options = {
+            "openmp":[True, False]
+            }
 
-    default_options = {"openmp":True, "gdal:libcurl":True, "gdal:netcdf":True}
+    default_options = {
+            "openmp":True, 
+            "gdal:libcurl":True, "gdal:netcdf":True
+            }
 
-    build_policy = 'always' #as we track master, always build
+    # build_policy = 'always' #as we track master, always build
+
+    _source_folder = 'WindNinja'
 
     def source(self):
 
-        git = tools.Git()
-        git.clone("https://github.com/firelab/windninja.git") 
+        tools.get(**self.conan_data["sources"][self.version])
+        os.rename("WindNinja-{}".format(self.version), self._source_folder)
+
+
+        # git = tools.Git()
+        # git.clone("https://github.com/firelab/windninja.git") 
         # git.checkout("3.5.3")
 
         # Needed for Find OMP on MacOS
-        tools.replace_in_file("CMakeLists.txt", "cmake_minimum_required(VERSION 2.6)",  "cmake_minimum_required(VERSION 3.16)")
+        tools.replace_in_file(os.path.join(self._source_folder,"CMakeLists.txt"), "cmake_minimum_required(VERSION 2.6)",  "cmake_minimum_required(VERSION 3.16)")
 
         #ensure we use a C++11 compiler
-        tools.replace_in_file("CMakeLists.txt", "project(WindNinja)", ''' project(WindNinja) 
+        tools.replace_in_file(os.path.join(self._source_folder,"CMakeLists.txt"), "project(WindNinja)", ''' project(WindNinja) 
                                                                           set(CMAKE_CXX_STANDARD 14)
                                                                           set(CMAKE_CXX_STANDARD_REQUIRED ON)
                                                                           set(CMAKE_CXX_EXTENSIONS OFF)
@@ -41,57 +51,57 @@ class WindNinjaConan(ConanFile):
 
         #Absolutely ensure we find it
         if(self.options.openmp):
-            tools.replace_in_file("CMakeLists.txt", "FIND_PACKAGE(OpenMP)", "find_package(OpenMP REQUIRED)")
+            tools.replace_in_file(os.path.join(self._source_folder,"CMakeLists.txt"), "FIND_PACKAGE(OpenMP)", "find_package(OpenMP REQUIRED)")
 
-        tools.replace_in_file("CMakeLists.txt", "include(FindBoost)", " ")
+        tools.replace_in_file(os.path.join(self._source_folder,"CMakeLists.txt"), "include(FindBoost)", " ")
         
-        tools.replace_in_file("CMakeLists.txt", "find_package(GDAL REQUIRED)", " ")
-        tools.replace_in_file("CMakeLists.txt", "include(FindGDAL)", "find_package(gdal REQUIRED)")
+        tools.replace_in_file(os.path.join(self._source_folder,"CMakeLists.txt"), "find_package(GDAL REQUIRED)", " ")
+        tools.replace_in_file(os.path.join(self._source_folder,"CMakeLists.txt"), "include(FindGDAL)", "find_package(gdal REQUIRED)")
 
         #changes to support the conan finds
-        tools.replace_in_file("CMakeLists.txt", "find_package(NetCDF REQUIRED)", ' ')
-        tools.replace_in_file("CMakeLists.txt", "include(FindNetCDF)", '''find_package(netcdf-c REQUIRED)''')
+        tools.replace_in_file(os.path.join(self._source_folder,"CMakeLists.txt"), "find_package(NetCDF REQUIRED)", ' ')
+        tools.replace_in_file(os.path.join(self._source_folder,"CMakeLists.txt"), "include(FindNetCDF)", '''find_package(netcdf-c REQUIRED)''')
 
         target_string = ' gdal::gdal '
         if(self.options.openmp):
             target_string += ' OpenMP::OpenMP_CXX '
 
         
-        tools.replace_in_file("autotest/CMakeLists.txt",
+        tools.replace_in_file(os.path.join(self._source_folder,"autotest/CMakeLists.txt"),
             "set(LINK_LIBS",
             f"set(LINK_LIBS {target_string}")
-        tools.replace_in_file("src/solar_grid/CMakeLists.txt",
+        tools.replace_in_file(os.path.join(self._source_folder,"src/solar_grid/CMakeLists.txt"),
             "set(LINK_LIBS",
             f"set(LINK_LIBS {target_string}")
-        tools.replace_in_file("src/cli/CMakeLists.txt",
+        tools.replace_in_file(os.path.join(self._source_folder,"src/cli/CMakeLists.txt"),
             "set(LINK_LIBS",
             f"set(LINK_LIBS {target_string}")
-        tools.replace_in_file("src/stl_converter/CMakeLists.txt",
+        tools.replace_in_file(os.path.join(self._source_folder,"src/stl_converter/CMakeLists.txt"),
             "set(LINK_LIBS",
             f"set(LINK_LIBS {target_string}")
-        tools.replace_in_file("src/fetch_station/CMakeLists.txt",
+        tools.replace_in_file(os.path.join(self._source_folder,"src/fetch_station/CMakeLists.txt"),
             "set(LINK_LIBS",
             f"set(LINK_LIBS {target_string}")
-        tools.replace_in_file("src/ninja/CMakeLists.txt",
+        tools.replace_in_file(os.path.join(self._source_folder,"src/ninja/CMakeLists.txt"),
             "set(LINK_LIBS",
             f"set(LINK_LIBS {target_string}")
-        tools.replace_in_file("src/fetch_dem/CMakeLists.txt",
+        tools.replace_in_file(os.path.join(self._source_folder,"src/fetch_dem/CMakeLists.txt"),
             "set(LINK_LIBS",
             f"set(LINK_LIBS {target_string}")
-        tools.replace_in_file("src/gui/CMakeLists.txt",
+        tools.replace_in_file(os.path.join(self._source_folder,"src/gui/CMakeLists.txt"),
             "set(LINK_LIBS",
             f"set(LINK_LIBS {target_string}")
-        tools.replace_in_file("src/output_converter/CMakeLists.txt",
+        tools.replace_in_file(os.path.join(self._source_folder,"src/output_converter/CMakeLists.txt"),
             "set(LINK_LIBS",
             f"set(LINK_LIBS {target_string}")
         
 
 
     def requirements(self):
-        self.requires( "boost/1.71.0@CHM/stable" )
-        self.requires( "proj/4.9.3@CHM/stable" )
-        self.requires( "gdal/2.4.1@CHM/stable" )
-        self.requires( "netcdf-c/4.6.2@CHM/stable")
+        self.requires( "boost/[>=1.75.0]@CHM/stable" )
+        self.requires( "proj/[>=7.0]@CHM/stable" )
+        self.requires( "gdal/[>=3]@CHM/stable" )
+        self.requires( "netcdf-c/[>=4.6.2]@CHM/stable")
         
 
     def _configure_cmake(self):
@@ -101,8 +111,8 @@ class WindNinjaConan(ConanFile):
         cmake.definitions["NINJA_QTGUI"] = False
         cmake.definitions["CMAKE_MODULE_PATH"] = self.build_folder # for the conan finds
         cmake.definitions["NINJAFOAM"] = False
-        cmake.definitions["NINJA_SCM_REVISION"] = "3.6.0" 
-        #self.version
+        # cmake.definitions["NINJA_SCM_REVISION"] = self.version
+
         cmake.definitions["OPENMP_SUPPORT"]=self.options.openmp
 
         if tools.os_info.is_macos:
@@ -112,7 +122,7 @@ class WindNinjaConan(ConanFile):
 
         cmake.verbose = True
 
-        cmake.configure(source_folder=self.source_folder)
+        cmake.configure(source_folder=self._source_folder)
 
         return cmake
 
