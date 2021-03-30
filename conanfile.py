@@ -19,7 +19,8 @@ class WindNinjaConan(ConanFile):
 
     default_options = {
             "openmp":True, 
-            "gdal:libcurl":True, "gdal:netcdf":True
+            "gdal:libcurl":True, 
+            "gdal:netcdf":True
             }
 
     # build_policy = 'always' #as we track master, always build
